@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ app_name | e }}</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 760px; margin: 10vh auto; padding: 0 1.25rem; line-height: 1.6; color: #172033; }
+    main { border: 1px solid #d8deea; border-radius: 14px; padding: 2rem; }
+    .tag { display: inline-block; padding: .2rem .65rem; border-radius: 999px; background: #e7f0ff; color: #174ea6; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <span class="tag">{{ app_environment | e }}</span>
+    <h1>{{ app_name | e }}</h1>
+    <p>{{ app_message | e }}</p>
+    <hr>
+    <p><strong>Owner:</strong> {{ app_owner | e }}</p>
+    <p><strong>Managed by:</strong> Ansible</p>
+  </main>
+</body>
+</html>

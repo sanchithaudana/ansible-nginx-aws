@@ -1,0 +1,14 @@
+---
+- name: Configure Nginx and deploy the website
+  hosts: webservers
+  become: true
+  gather_facts: true
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  vars_files:
+  - ../group_vars/all.yml
+
+  roles:
+    - nginx_web

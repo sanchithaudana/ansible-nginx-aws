@@ -1,0 +1,34 @@
+---
+- name: Install Nginx and required packages
+  ansible.builtin.apt:
+    name:
+      - "{{ nginx_package_name }}"
+      - curl
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Ensure Nginx is enabled and running
+  ansible.builtin.service:
+    name: "{{ nginx_service_name }}"
+    state: started
+    enabled: true
+
+- name: Deploy website HTML from template
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: "{{ nginx_document_root }}/{{ nginx_index_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload nginx
+
+- name: Verify Nginx responds locally
+  ansible.builtin.uri:
+    url: http://127.0.0.1/
+    status_code: 200
+    return_content: true
+  register: nginx_http_check
+  retries: 5
+  delay: 2
+  until: nginx_http_check.status == 200

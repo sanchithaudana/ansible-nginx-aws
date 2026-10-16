@@ -1,0 +1,51 @@
+---
+- name: Provision the Nginx web server in AWS
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+
+  vars_files:
+  - ../group_vars/all.yml
+
+  tasks:
+  - name: Validate required AWS settings
+    ansible.builtin.assert:
+      that:
+      - ec2_image_id is string
+      - "'REPLACE' not in ec2_image_id"
+      - "'REPLACE' not in ec2_key_name"
+      - "'REPLACE' not in ec2_subnet_id"
+      - "'REPLACE' not in ec2_security_group_id"
+      fail_msg: "Edit group_vars/all.yml and replace all AWS placeholder values before provisioning."
+
+  - name: Create or ensure the EC2 instance exists
+    amazon.aws.ec2_instance:
+      name: "{{ ec2_instance_name }}"
+      region: "{{ aws_region }}"
+      image_id: "{{ ec2_image_id }}"
+      instance_type: "{{ ec2_instance_type }}"
+      key_name: "{{ ec2_key_name }}"
+      vpc_subnet_id: "{{ ec2_subnet_id }}"
+      security_group: "{{ ec2_security_group_id }}"
+      network_interfaces:
+      - assign_public_ip: "{{ ec2_assign_public_ip }}"
+      wait: "{{ ec2_wait }}"
+      wait_timeout: "{{ ec2_wait_timeout }}"
+      state: running
+      tags:
+        Project: "{{ project_name }}"
+        Environment: "{{ deployment_environment }}"
+        Role: "{{ web_server_role }}"
+        ManagedBy: Ansible
+    register: ec2_result
+
+  - name: Show provisioned instance details
+    ansible.builtin.debug:
+      msg:
+      - "Instance provisioning request completed."
+      - "Region: {{ aws_region }}"
+      - "Instance IDs: {{ ec2_result.instance_ids | default([]) }}"
+      - "Next: run ansible-inventory --graph, then playbooks/configure_nginx.yml"

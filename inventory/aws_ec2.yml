@@ -1,0 +1,22 @@
+---
+plugin: amazon.aws.aws_ec2
+regions:
+- ap-south-1
+filters:
+  instance-state-name:
+  - running
+  "tag:Project": ansible-nginx-web
+  "tag:Role": web
+keyed_groups:
+- key: ec2_tags.Environment
+  prefix: env
+- key: ec2_tags.Role
+  prefix: role
+hostnames:
+- ip-address
+compose:
+  ansible_host: public_ip_address
+  ansible_user: "'ubuntu'"
+  ansible_ssh_private_key_file: "'/Users/apple/.ssh/dbtest.pem'"
+groups:
+  webservers: ec2_tags.Role == 'web'

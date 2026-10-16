@@ -1,0 +1,29 @@
+---
+# AWS / EC2 settings. Replace every placeholder before provisioning.
+aws_region: "ap-south-1"
+ec2_instance_name: "ansible-nginx-web-dev"
+ec2_image_id: "ami-01a00762f46d584a1"
+ec2_instance_type: "t3.micro"
+# AWS key-pair name; this is not the local .pem filename.
+ec2_key_name: "dbtest"
+ec2_subnet_id: "subnet-09ab46ad5b7d94d43"
+ec2_security_group_id: "sg-071d8784372d61ec2"
+
+# This path is on the Ansible control node (your MacBook).
+ansible_ssh_private_key_file: /Users/apple/.ssh/dbtest.pem
+ansible_user: "ubuntu"
+ansible_port: 22
+
+ec2_assign_public_ip: true
+ec2_wait: true
+ec2_wait_timeout: 600
+
+project_name: "ansible-nginx-web"
+deployment_environment: "dev"
+web_server_role: "web"
+
+# Website content passed into the Jinja2 template.
+app_name: "Ansible Managed Nginx Website"
+app_environment: "Development"
+app_message: "This page was deployed by Ansible to AWS EC2."
+app_owner: "Sanchitha Udana Wijesundara"
